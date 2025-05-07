@@ -3,10 +3,9 @@
 import json
 import os
 import re
-import urllib.request # Python標準ライブラリを使用
-import urllib.error   # エラーハンドリング用
+import urllib.request # 標準ライブラリ
+import urllib.error
 
-# FastAPIエンドポイントURL (環境変数から取得することを推奨)
 # Google ColabでFastAPIを起動した際に表示されるngrokのURLに /predict (FastAPIのエンドポイント) を追加したもの
 FASTAPI_ENDPOINT_URL = os.environ.get("FASTAPI_ENDPOINT_URL", "YOUR_FASTAPI_NGROK_URL/predict")
 
@@ -23,14 +22,12 @@ def lambda_handler(event, context):
         # リクエストボディの解析
         body = json.loads(event['body'])
         message = body['message']
-        # 最初はシンプルにmessageのみを使用。発展として会話履歴を利用。
+        # messageのみを使用。
         conversation_history = body.get('conversationHistory', []) 
         
         print("Processing message:", message)
 
         # FastAPIへのリクエストペイロードを作成
-        # アドバイスに従い、最初はmessageのみをpromptとして送信するシンプルな形を想定。
-        # FastAPI側が { "message": "...", "conversationHistory": [...] } を期待する場合：
         request_payload_to_fastapi = {
             "message": message,
             "conversationHistory": conversation_history # FastAPI側の実装に合わせて調整
